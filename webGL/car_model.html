@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script type="application/javascript" src="three.js"></script>
+</head>
+<body onload="init()">
+    <canvas id="mainCanvas" width="400px" height="300px"></canvas>
+</body>
+<script>
+    function init() {
+        var renderer = new THREE.WebGLRenderer({
+           canvas: document.getElementById('mainCanvas')
+        });
+        renderer.setClearColor(0x000000);
+        var scene = new THREE.Scene();
+        var camera = new THREE.OrthographicCamera(-5, 5, 3.75, -3.75, 0.1, 100);
+        camera.position.set(4, 3, 5);
+        camera.lookAt(new THREE.Vector3(0, 0, 0));
+        scene.add(camera);
+        var cube = new THREE.Mesh(new THREE.CubeGeometry(4, 2, 3),
+                new THREE.MeshBasicMaterial({
+                    color:0xff0000
+                })
+        );
+        var torus = new THREE.Mesh(new THREE.TorusGeometry(0.35, 0.1, 10, 18),
+                new THREE.MeshBasicMaterial({
+                    color:0xffffff
+                })
+        );
+        var torus2 = new THREE.Mesh(new THREE.TorusGeometry(0.35, 0.1, 10, 18),
+                new THREE.MeshBasicMaterial({
+                    color:0xffffff
+                })
+        );
+        var torus3 = new THREE.Mesh(new THREE.TorusGeometry(0.35, 0.1, 10, 18),
+                new THREE.MeshBasicMaterial({
+                    color:0xffffff
+                })
+        );
+        var torus4 = new THREE.Mesh(new THREE.TorusGeometry(0.35, 0.1, 10, 18),
+                new THREE.MeshBasicMaterial({
+                    color:0xffffff
+                })
+        );
+        scene.add(cube);
+        cube.position.set(0,0,0);
+        scene.add(torus);
+        torus.position.set(-1, -1, 1.5);
+        scene.add(torus2);
+        torus2.position.set(1, -1, 1.5);
+        scene.add(torus3);
+        torus3.position.set(-1, -1, -1.5);
+        scene.add(torus4);
+        torus4.position.set(1, -1, -1.5);
+        var light = new THREE.DirectionalLight(0xff0000,1.0,0); //设置平行光源
+        light.position.set(200,200,200);    //设置光源向量
+        scene.add(light);   //追加光源到场景
+        renderer.render(scene, camera);
+    }
+</script>
+</html>
