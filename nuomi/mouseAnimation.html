@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<style>
+    .cover{
+        background: url("timg.jpeg");
+        background-size: 450px;
+        width: 450px;
+        height: 281px;
+        float: left;
+    }
+    .main:hover .cover{
+        -webkit-filter: blur(10px);
+        -moz-filter: blur(10px);
+        -ms-filter: blur(10px);
+        filter: blur(10px);
+    }
+    .backImg{
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        width: 450px;
+    }
+    .colorBorder{
+        padding: 50px 30px;
+        margin: 20px 50px;
+        /*transform: scale3d(0, 1, 1);*/
+        /*transform-origin: center;*/
+        /*transition:transform 1s;*/
+    }
+    .colorBorder::before, .colorBorder::after {
+        height: 100%;
+        width: 100%;
+        transform-origin: center;
+    }
+    .colorBorder::before {
+        border-top: 2px solid #fff0f0;
+        border-bottom: 2px solid #fff0f0;
+        transform: scale3d(0, 1, 1);
+    }
+    .colorBorder::after {
+        border-left: 2px solid #fff0f0;
+        border-right: 2px solid #fff0f0;
+        transform: scale3d(1, 0, 1);
+    }
+    /*.main:hover .colorBorder{*/
+        /*!*border: 3px solid #fff0f0;*!*/
+        /*transform: scale3d(1, 1, 1);*/
+        /*transition: transform 0.5s;*/
+    /*}*/
+    .main:hover .colorBorder::before, .main:hover .colorBorder::after {
+        -webkit-transform: scale3d(1, 1, 1);
+        transform: scale3d(1, 1, 1);
+        -webkit-transition: -webkit-transform 0.5s;
+        transition: transform 0.5s;
+    }
+    .colorBorder:hover::after{
+        transform: scale3d(1, 1, 1);
+        transition: transform 0.5s;
+    }
+
+    .colorBorder p{
+        text-align: center;
+        font-size: 22px;
+        line-height: 28px;
+        color: transparent;
+    }
+    .main:hover .title1{
+        font-family: "微软雅黑";
+        background:-webkit-linear-gradient(left,#f00,#ff0 25%,#0f0 40%,#0ff 55%,#00f 70%,#f00);
+        -webkit-background-size: 61%;
+        -webkit-background-clip: text;
+        -webkit-animation: slideShine 2.5s infinite;
+    }
+    .main:hover .title2{
+        color: #00a2e6;
+        font-family: "LiSong Pro";
+        -webkit-animation: colorChange 1s infinite;
+    }
+    @-webkit-keyframes slideShine {
+        0% {
+            background-position: 0 0;
+        }
+        100% {
+            background-position: 100% 100%;
+        }
+    }
+    @-webkit-keyframes colorChange {
+        0% {
+            color: #00a2e6;
+        }
+        100% {
+            color: #00AA00;
+        }
+    }
+</style>
+<body>
+    <div class="main">
+        <div class="cover"></div>
+        <div class="backImg">
+            <div class="colorBorder">
+                <p class="title1">欢迎参加百度技术学院</p>
+                <p class="title2">点击报名</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
