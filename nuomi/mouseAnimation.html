@@ -27,40 +27,36 @@
     .colorBorder{
         padding: 50px 30px;
         margin: 20px 50px;
-        /*transform: scale3d(0, 1, 1);*/
-        /*transform-origin: center;*/
-        /*transition:transform 1s;*/
+        background: none;
+        border: 0;
+        box-sizing: border-box;
     }
-    .colorBorder::before, .colorBorder::after {
-        height: 100%;
-        width: 100%;
+    .main .colorBorder::before,.main .colorBorder::after {
+        box-sizing: border-box;
+        content: '';
+        position: absolute;
+        width: 80%;
+        height: 80%;
+        top: 30px;
+        left: 50px;
         transform-origin: center;
     }
-    .colorBorder::before {
+    .main .colorBorder::before {
         border-top: 2px solid #fff0f0;
         border-bottom: 2px solid #fff0f0;
         transform: scale3d(0, 1, 1);
     }
-    .colorBorder::after {
+    .main .colorBorder::after {
         border-left: 2px solid #fff0f0;
         border-right: 2px solid #fff0f0;
         transform: scale3d(1, 0, 1);
     }
-    /*.main:hover .colorBorder{*/
-        /*!*border: 3px solid #fff0f0;*!*/
-        /*transform: scale3d(1, 1, 1);*/
-        /*transition: transform 0.5s;*/
-    /*}*/
+
     .main:hover .colorBorder::before, .main:hover .colorBorder::after {
-        -webkit-transform: scale3d(1, 1, 1);
-        transform: scale3d(1, 1, 1);
-        -webkit-transition: -webkit-transform 0.5s;
-        transition: transform 0.5s;
-    }
-    .colorBorder:hover::after{
         transform: scale3d(1, 1, 1);
         transition: transform 0.5s;
     }
+
 
     .colorBorder p{
         text-align: center;
@@ -96,6 +92,7 @@
             color: #00AA00;
         }
     }
+
 </style>
 <body>
     <div class="main">
