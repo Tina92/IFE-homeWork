@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <div>
+        <label>测试手机号：</label>
+        <input type="text" name="tele" id="tele" onblur="telephone()" />
+    </div>
+    <p></p>
+    <div>
+        <label>是否有相邻重复:</label>
+        <input type="text" name="word" id="word" onblur="wordRepeat()" >
+    </div>
+</body>
+<script>
+    function telephone() {
+        var a = document.getElementById('tele').value;
+        if(a) {
+            if (!(/^1[34578]\d{9}$/.test(a))) {
+                alert("手机号码有误，请重填");
+                return false;
+            } else {
+                alert('Ok!');
+                return true;
+            }
+        }
+    }
+
+    function wordRepeat() {
+        var w = document.getElementById('word').value;
+        if(w){
+            if(!(/(.+)\1{1,}/.test(w))){
+                alert("不重复");
+                return false;
+            }else {
+                alert("重复");
+                return true;
+            }
+        }
+    }
+</script>
+</html>
