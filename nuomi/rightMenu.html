@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<style>
+    ul,li{list-style-type:none; padding: 0px;}
+    .box {
+        width: 500px;
+        height: 100px;
+        /*margin: 20px auto;*/
+        border-radius: 10px;
+        background: #EDEDED;
+        /*box-shadow: #000 0 0 15px inset;*/
+        /*padding: 20px;*/
+        color: #ccc;
+        font-size: 36px;
+        font-weight: bolder;
+    }
+    .menu{
+        display: none;
+        background: #fff0f0;
+        border: 1px solid #e3e3e3;
+        padding: 2px 5px;
+    }
+    .menu li{
+        padding: 10px;
+        cursor: pointer;
+    }
+    .menu li:hover{
+        background: #FFFFFF;
+    }
+
+</style>
+<body>
+    <div class="box" oncontextmenu=self.event.returnValue=false  onmousedown="right(event)">
+        请对着白色区域右键单击....
+    </div>
+    <div class="menu" id="menu">
+        <ul>
+            <li onclick="choose(event)">
+               Menu Item1
+            </li>
+            <li onclick="choose(event)">
+                Menu Item2
+            </li>
+        </ul>
+    </div>
+</body>
+<script>
+    function right(event) {
+        if(event.button == 2){
+            document.getElementById('menu').style.display = "block";
+            document.getElementById('menu').style.position = "absolute";
+            document.getElementById('menu').style.top = event.screenY - 100+'px';
+            document.getElementById('menu').style.left = event.screenX - 50 +'px';
+        }
+    }
+    function choose(item) {
+        alert( item.toElement.textContent );
+    }
+
+</script>
+</html>
