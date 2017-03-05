@@ -13,50 +13,60 @@
         var renderer = new THREE.WebGLRenderer({
            canvas: document.getElementById('mainCanvas')
         });
-        renderer.setClearColor(0x000000);
+        renderer.setClearColor(0x666666);
+        renderer.shadowMapEnabled = true;
+        renderer.shadowMapSoft = true;
         var scene = new THREE.Scene();
-        var camera = new THREE.OrthographicCamera(-5, 5, 3.75, -3.75, 0.1, 100);
-        camera.position.set(4, 3, 5);
+        // 照相机
+        var camera = new THREE.PerspectiveCamera(30, 4/3, 1, 90);
+        camera.position.set(13, 7, 13);
         camera.lookAt(new THREE.Vector3(0, 0, 0));
         scene.add(camera);
-        var cube = new THREE.Mesh(new THREE.CubeGeometry(4, 2, 3),
-                new THREE.MeshBasicMaterial({
-                    color:0xff0000
-                })
-        );
-        var torus = new THREE.Mesh(new THREE.TorusGeometry(0.35, 0.1, 10, 18),
-                new THREE.MeshBasicMaterial({
-                    color:0xffffff
-                })
-        );
-        var torus2 = new THREE.Mesh(new THREE.TorusGeometry(0.35, 0.1, 10, 18),
-                new THREE.MeshBasicMaterial({
-                    color:0xffffff
-                })
-        );
-        var torus3 = new THREE.Mesh(new THREE.TorusGeometry(0.35, 0.1, 10, 18),
-                new THREE.MeshBasicMaterial({
-                    color:0xffffff
-                })
-        );
-        var torus4 = new THREE.Mesh(new THREE.TorusGeometry(0.35, 0.1, 10, 18),
-                new THREE.MeshBasicMaterial({
-                    color:0xffffff
-                })
-        );
+
+
+//底座
+        var plane = new THREE.Mesh(new THREE.PlaneGeometry(18, 18, 18, 18),
+                new THREE.MeshLambertMaterial({color: 0xff0000}));
+        plane.rotation.x = -Math.PI / 2;
+        plane.position.y = -2.5;
+        plane.receiveShadow = true;
+        scene.add(plane);
+
+// 车身
+        var cube = new THREE.Mesh(new THREE.CubeGeometry(8, 4, 4), new THREE.MeshLambertMaterial({
+            color: 0xffffff
+        }));
+        cube.castShadow = true;
+
         scene.add(cube);
-        cube.position.set(0,0,0);
-        scene.add(torus);
-        torus.position.set(-1, -1, 1.5);
-        scene.add(torus2);
-        torus2.position.set(1, -1, 1.5);
-        scene.add(torus3);
-        torus3.position.set(-1, -1, -1.5);
-        scene.add(torus4);
-        torus4.position.set(1, -1, -1.5);
-        var light = new THREE.DirectionalLight(0xff0000,1.0,0); //设置平行光源
-        light.position.set(200,200,200);    //设置光源向量
-        scene.add(light);   //追加光源到场景
+
+// 车轱辘
+        Array(5).join('1').split('').forEach(function(v, i) {
+            var torus = new THREE.Mesh(new THREE.TorusGeometry(0.8, 0.3, 18, 18), new THREE.MeshLambertMaterial({
+                color: 0xffffff
+            }));
+            torus.position.set(i<2? 2.5 : -2.5, -1.6, Math.pow(-1, i) * 2.4);
+            torus.castShadow = true;
+            scene.add(torus);
+        })
+        // 灯光
+        var light = new THREE.DirectionalLight();
+        light.position.set(-12, 50, 10);
+        light.target = cube;
+        light.castShadow = true;
+
+        light.shadowCameraNear = 20;
+        light.shadowCameraFar = 1000;
+        light.shadowCameraLeft = -500;
+        light.shadowCameraRight = 5000;
+        light.shadowCameraTop = 50;
+        light.shadowCameraBottom = -50;
+        light.shadowCameraVisible = true;
+
+        light.shadowMapWidth = 512;
+        light.shadowMapHeight = 512;
+        light.shadowDarkness = 0.1;
+        scene.add(light);
         renderer.render(scene, camera);
     }
 </script>
