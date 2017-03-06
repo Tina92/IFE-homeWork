@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>loading</title>
+</head>
+<style>
+    .box{
+        width: 100px; height: 100px;
+        border-radius: 50%;
+        background: #fe3290;
+        background-image: linear-gradient(to right, transparent 50%, #feafd3 0);
+        /*overflow: hidden;*/
+    }
+    .box::before{
+        content: '';
+        display: block;
+        margin-left: 50%;
+        height: 100%;
+        border-radius: 0 100% 100% 0 / 50%;;
+        background-color: inherit;
+        /*transform: rotate(.1turn);*/
+        transform-origin: left;
+        animation: spin 0.5s linear infinite,bg 1s step-end infinite;
+    }
+    @keyframes spin {
+        to { transform: rotate(0.5turn); }
+    }
+
+    @keyframes bg {
+        50% { background: #feafd3; }
+    }
+    .circle{
+        position: absolute;
+        left: -20px;
+        top: -20px;
+        box-sizing: border-box;
+        width: 140px;
+        height: 140px;
+        border: 2px solid rgb(255,41,140);
+        border-radius: 70px;
+        border-top-color: transparent;
+        background-color: transparent;
+        animation: rotation 0.8s linear infinite;
+    }
+    @keyframes rotation {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+    .main{
+        position: relative;
+        left: calc( 50vw - 70px);
+        top: calc( 50vh - 70px);
+    }
+</style>
+<body>
+<div class="main">
+    <div class="box"></div>
+    <div class="circle"></div>
+</div>
+
+</body>
+</html>
