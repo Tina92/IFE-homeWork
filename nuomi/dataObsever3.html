@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+</body>
+<script>
+    // 观察者构造函数
+    function Observer(data) {
+        this.data = data;
+        this.walk(data);
+        this.eventsBus = new Event();
+    }
+    function Event(){
+        this.events={};
+    }
+    Event.prototype.on = function(attr, callback){
+        if(this.events[attr]){
+            this.events[attr].push(callback);
+        }else{
+            this.events[attr]=[callback];
+        }
+    }
+
+    let p = Observer.prototype;
+    p.setterAndGetter = function (key, val) {
+        let _this = this;
+        Object.defineProperty(this.data, key, {
+            enumerable:true,
+            configurable: true,
+            get: function () {
+                _this.emit(key,val);
+                return val;
+            },
+            set: function (newVal) {
+                if(newVal === val) return;
+                val = newVal;
+                _this.emit(key,val);
+            }
+        })
+    }
+    // 因为我们要为对象的每一个属性绑定getter和setter
+    p.walk = function (obj) {
+        let val;
+        for (let key in obj) {
+            if (obj.hasOwnProperty(key)) {
+                val = obj[key];
+
+                // 这里进行判断，如果还没有遍历到最底层，继续new Observer
+                if (typeof val === 'object') {
+                    new Observer(val);
+                }
+
+                this.setterAndGetter(key, val);
+            }
+        }
+    };
+
+    p.$watch = function (attr, callback) {
+        this.eventsBus.on(attr, callback);
+    }
+    p.emit = function (keyName) {
+        let handlerArgs=[].slice.call(arguments,1);
+        //如果这个事件并没有被监听则直接返回当前对象
+        if(!this.eventsBus.events[keyName]){
+            return this
+        }
+
+        for(let i=0,len=this.eventsBus.events[keyName].length;i<len;i++){
+            this.eventsBus.events[keyName][i].apply(this,handlerArgs)
+        }
+        return this;
+    }
+
+    let app2 = new Observer({
+        name: {
+            firstName: 'shaofeng',
+            lastName: 'liang'
+        },
+        age: 25
+    });
+
+    app2.$watch('name', function (newName) {
+        console.log('我的姓名发生了变化，可能是姓氏变了，也可能是名字变了。')
+    });
+
+</script>
+</html>
