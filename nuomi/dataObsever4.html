@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <div id="app">
+        <p>姓名：{{user.name}}</p>
+        <p>年龄：{{user.age}}</p>
+    </div>
+</body>
+<script>
+    function Vue(obj) {
+        // 参数判断
+        if (typeof obj === 'object') {
+            this.DOM = this.findDOM(obj.el);
+            this.data = obj.data;
+            this.render();
+        }
+        else {
+            throw 'Parameter type must object.';
+        }
+    }
+    Vue.prototype.findDOM = function (dom) {
+        // 对于DOMClue参数的判断
+        if (typeof dom === 'string') {
+            switch (dom[0]) {
+                case '#':
+                    var DOM = document.getElementById(dom.slice(1));
+                    return DOM;
+                    break;
+                case '.':
+                    var DOM = document.getElementsByClassName(dom.slice(1));
+                    return DOM;
+                    break;
+            }
+        }
+        else {
+            throw 'El must be string.';
+        }
+        return;
+    };
+    Vue.prototype.render = function () {
+
+        if (this.DOM) {
+            var unrenderText = this.DOM.innerHTML;
+            (function (self) {
+                var rep = /\{{2}(.*)\}{2}/g;
+                do {
+                    var tempRander = rep.exec(unrenderText);
+                    if (tempRander) {
+                        var key ='self.data.' + tempRander[1];
+                        unrenderText = unrenderText.replace(tempRander[0], eval(key));
+                    }
+
+                } while (tempRander);
+                if (unrenderText) {
+                    self.DOM.innerHTML = unrenderText;
+                }
+
+            })(this);
+        }
+    };
+
+    let app = new Vue({
+        el: '#app',
+        data: {
+            user: {
+                name: 'Tina',
+                age: 25
+            }
+        }
+    });
+</script>
+</html>
