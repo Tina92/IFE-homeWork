@@ -4,14 +4,20 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <script type="application/javascript" src="three.js"></script>
+    <script type="application/javascript" src="TrackballControls.js"></script>
 </head>
-<body onload="init()">
+<body>
     <canvas id="mainCanvas" width="400px" height="300px"></canvas>
 </body>
 <script>
+    var controls;
+    init();
+    animate();
     function init() {
         var renderer = new THREE.WebGLRenderer({
-           canvas: document.getElementById('mainCanvas')
+           canvas: document.getElementById('mainCanvas'),
+            antialias: true,
+            precision: "highp"
         });
         renderer.setClearColor(0x666666);
         renderer.shadowMapEnabled = true;
@@ -22,8 +28,9 @@
         camera.position.set(13, 7, 13);
         camera.lookAt(new THREE.Vector3(0, 0, 0));
         scene.add(camera);
-
-
+        controls = new THREE.TrackballControls( camera );
+        controls.addEventListener( 'change', () => renderer.render(scene, camera) );
+        animate();
 //底座
         var plane = new THREE.Mesh(new THREE.PlaneGeometry(18, 18, 18, 18),
                 new THREE.MeshLambertMaterial({
@@ -82,5 +89,10 @@
         scene.add(light);
         renderer.render(scene, camera);
     }
+    function animate() {
+        requestAnimationFrame( animate );
+        controls.update();
+    }
+
 </script>
 </html>
