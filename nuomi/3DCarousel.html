@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Carousel</title>
+</head>
+<style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    body,html{height:100%;background-color:#f2f2f2}
+    .banner{
+        width:150px;
+        margin:150px auto;
+        position:relative;
+        perspective:800px;
+        -webkit-perspective: 800px;
+    }
+    .banner .target{transform-style:preserve-3d}
+    .banner .target.rotate{transition:transform ease-in-out 1s}
+    .banner ul{list-style:none}
+    .banner ul li{position:absolute}
+    .banner ul li img{width:100%}
+    .banner ul li:nth-child(1){
+        transform:rotateY(0) translateZ(450px)
+    }
+    .banner ul li:nth-child(2){
+        transform:rotateY(60deg) translateZ(450px)
+    }
+    .banner ul li:nth-child(3){
+        transform:rotateY(120deg) translateZ(450px)
+    }
+    .banner ul li:nth-child(4){
+        transform:rotateY(180deg) translateZ(450px)
+    }
+    .banner ul li:nth-child(5){
+        transform:rotateY(240deg) translateZ(450px)
+    }
+    .banner ul li:nth-child(6){
+        transform:rotateY(300deg) translateZ(450px)
+    }
+</style>
+<body>
+    <div class="banner">
+        <ul class="target">
+            <li><a href="#" target="_blank" title="百度前端技术学院 2017"><img src="../webGL/1.jpeg" alt="1"></a></li>
+            <li><a href="#" target="_blank" title="百度前端技术学院 2017"><img src="../webGL/2.jpeg" alt="2"></a></li>
+            <li><a href="#" target="_blank" title="百度前端技术学院 2017"><img src="../webGL/3.jpeg" alt="3"></a></li>
+            <li><a href="#" target="_blank" title="百度前端技术学院 2017"><img src="../webGL/4.jpeg" alt="4"></a></li>
+            <li><a href="#" target="_blank" title="百度前端技术学院 2017"><img src="../webGL/5.jpeg" alt="5"></a></li>
+            <li><a href="#" target="_blank" title="百度前端技术学院 2017"><img src="../webGL/6.jpeg" alt="6"></a></li>
+        </ul>
+    </div>
+</body>
+<script>
+    (function(){
+        let ulEle = document.querySelectorAll('.target')[0];
+        let count = 1;
+
+        setInterval(() => {
+
+            let deg = -60 * count;
+            ulEle.style.transform = "rotateY(" + deg + "deg)";
+
+            if (ulEle.className === "target") {
+                ulEle.className = "target rotate";
+            } else {
+                ulEle.className = "target";
+                count += 1;
+            }
+        }, 2000);
+    })();
+</script>
+</html>
