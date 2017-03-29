@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>colorPicker</title>
+</head>
+<body>
+    <div class="canvas">
+        <canvas id="myCanvas" width="400px" height="300px"></canvas>
+        <canvas id="colorSelect" width="50px" height="300px"></canvas>
+    </div>
+    <div>
+        <div class="color_input">
+            <p>
+                <label for="">R</label>
+                <input type="number">
+            </p>
+            <p>
+                <label for="">G</label>
+                <input type="number">
+            </p>
+            <p>
+                <label for="">B</label>
+                <input type="number">
+            </p>
+            <p>
+                <label for="">H</label>
+                <input type="number">
+            </p>
+            <p>
+                <label for="">S</label>
+                <input type="number">
+            </p>
+            <p>
+                <label for="">L</label>
+                <input type="number">
+            </p>
+        </div>
+    </div>
+</body>
+<script>
+    this.inputs = document.getElementsByTagName('input');
+    var c=document.getElementById("myCanvas");
+    var ctx=c.getContext("2d");
+    this.midColor = '#ff0000';
+    var _this = this;
+    createColor();
+    var color=document.getElementById("colorSelect");
+    var context=color.getContext("2d");
+    var selectColor = context.createLinearGradient(50, 0, 50, 300);
+    selectColor.addColorStop(0, 'rgb(255,0,0)');
+    selectColor.addColorStop(0.2, 'rgb(255,255,0)');
+    selectColor.addColorStop(0.4, 'rgb(0,255,0)');
+    selectColor.addColorStop(0.6, 'rgb(0,255,255)');
+    selectColor.addColorStop(0.8, 'rgb(0,0,255)');
+    selectColor.addColorStop(1, 'rgb(255,0,255)');
+    context.fillStyle = selectColor;
+    context.fillRect(0, 0, 50, 300);
+    color.onclick=function(e) {
+        let x = e.clientX, y = e.clientY, x1 = this.offsetLeft, y1 = this.offsetTop, nowx = x - x1, nowy = y - y1;
+        let imagedates = context.getImageData(nowx, nowy, 1, 1);
+        let pixel = imagedates.data;
+        _this.midColor = 'rgb(' + pixel[0] +','+ pixel[1] +','+ pixel[2] +')';
+        createColor();
+    }
+    function createColor() {
+        var cardGredient = ctx.createLinearGradient(0, 0, 500, 500);
+        cardGredient.addColorStop(0, 'rgb(255,255,255)');
+        cardGredient.addColorStop(0.5, _this.midColor);
+        cardGredient.addColorStop(1, 'rgb(0,0,0)');
+        ctx.fillStyle = cardGredient;
+        ctx.fillRect(0, 0, 400, 300);
+    }
+    c.onclick=function(e) {
+        let x = e.clientX, y = e.clientY, x1 = this.offsetLeft, y1 = this.offsetTop, nowx = x - x1, nowy = y - y1;
+        let imagedates = ctx.getImageData(nowx, nowy, 1, 1);
+        let pixel = imagedates.data;
+        _this.inputs[0].value = pixel[0];
+        _this.inputs[1].value = pixel[1];
+        _this.inputs[2].value = pixel[2];
+        rgbtohsl();
+    }
+    function rgbtohsl() {
+        var r = _this.inputs[0].value / 255, g = _this.inputs[1].value / 255, b = _this.inputs[2].value / 255;
+        var max = Math.max(r, g, b), min = Math.min(r, g, b);
+        var h, s, l;
+
+        l = (max + min) / 2;
+
+        if(max == min){
+            h = s = 0;
+        }else{
+            s = l < 0.5 ? (max - min)/(max + min) : (max -min)/(2 - max -min);
+            if(r == max) h = (g - b)/(max - min) + ( g < b ? 6 : 0)
+            if(g == max) h = (b - r)/(max - min) + 2
+            if(b == max) h = (r - g)/(max - min) + 4
+            h /= 6;
+        }
+        _this.inputs[3].value = Math.round(360 * h);
+        _this.inputs[4].value = Math.round(100 * s);
+        _this.inputs[5].value = Math.round(100 * l);
+    }
+</script>
+</html>
