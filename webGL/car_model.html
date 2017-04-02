@@ -5,16 +5,18 @@
     <title>Title</title>
     <script type="application/javascript" src="three.js"></script>
     <script type="application/javascript" src="TrackballControls.js"></script>
+    <script type="application/javascript" src="Stats.min.js"></script>
 </head>
 <body>
+    <div id="state"></div>
     <canvas id="mainCanvas" width="400px" height="300px"></canvas>
 </body>
 <script>
-    var controls;
+    var renderer,scene,car,camera,controls,stats,isTurning = false;
     init();
     animate();
     function init() {
-        var renderer = new THREE.WebGLRenderer({
+        renderer = new THREE.WebGLRenderer({
            canvas: document.getElementById('mainCanvas'),
             antialias: true,
             precision: "highp"
@@ -22,15 +24,16 @@
         renderer.setClearColor(0x666666);
         renderer.shadowMapEnabled = true;
         renderer.shadowMapSoft = true;
-        var scene = new THREE.Scene();
+        scene = new THREE.Scene();
         // 照相机
-        var camera = new THREE.PerspectiveCamera(30, 4/3, 1, 90);
+        camera = new THREE.PerspectiveCamera(30, 4/3, 1, 90);
         camera.position.set(13, 7, 13);
         camera.lookAt(new THREE.Vector3(0, 0, 0));
         scene.add(camera);
         controls = new THREE.TrackballControls( camera );
         controls.addEventListener( 'change', () => renderer.render(scene, camera) );
-        animate();
+        var axisHelper = new THREE.AxisHelper( 5 );
+        scene.add( axisHelper );
 //底座
         var plane = new THREE.Mesh(new THREE.PlaneGeometry(18, 18, 18, 18),
                 new THREE.MeshLambertMaterial({
@@ -41,38 +44,12 @@
         plane.position.y = -2.5;
         plane.receiveShadow = true;
         scene.add(plane);
-
-// 车身
-        var materials = [];
-        for (var i = 0; i < 6; ++i) {
-            materials.push(new THREE.MeshBasicMaterial({
-                map: THREE.ImageUtils.loadTexture(  i + '.jpeg',
-                        {}, function() {
-                            renderer.render(scene, camera);
-                        }),
-                overdraw: true
-            }));
-        }
-        var cube = new THREE.Mesh(new THREE.CubeGeometry(8, 4, 4), new THREE.MeshFaceMaterial(materials));
-        cube.castShadow = true;
-
-        scene.add(cube);
-
-// 车轱辘
-        Array(5).join('1').split('').forEach(function(v, i) {
-            var torus = new THREE.Mesh(new THREE.TorusGeometry(0.8, 0.3, 18, 18), new THREE.MeshPhongMaterial({
-                color: 0x777777,
-                specular: 0xffff00,
-                shininess: 100
-            }));
-            torus.position.set(i<2? 2.5 : -2.5, -1.6, Math.pow(-1, i) * 2.4);
-            torus.castShadow = true;
-            scene.add(torus);
-        })
+        //添加小车
+        getCar(scene);
         // 灯光
         var light = new THREE.DirectionalLight();
         light.position.set(-12, 50, 10);
-        light.target = cube;
+        light.target = car;
         light.castShadow = true;
 
         light.shadowCameraNear = 20;
@@ -88,11 +65,111 @@
         light.shadowDarkness = 0.1;
         scene.add(light);
         renderer.render(scene, camera);
+        getStats();
+        document.addEventListener('keydown', handleMove, false);
     }
     function animate() {
         requestAnimationFrame( animate );
         controls.update();
+        stats.update();
+        camera.lookAt( car.getWorldPosition() );
+        renderer.render( scene, camera );
     }
+    function handleMove(ev) {
+
+        switch(ev.keyCode) {
+            case 65:
+                //左转，逆时针
+                turn(1);
+                break;
+            case 87:
+                move(1);
+                break;
+            case 68:
+                //右转， 顺时针
+                turn(-1);
+                break;
+            case 83:
+                move(-1);
+                break;
+        }
+    }
+
+    function turn(turn) {
+        if (isTurning) {
+            //turn<0 左转 >0右转
+            car.rotation.y += .1 * turn;
+        } else {
+            isTurning = true;
+        }
+        var angle = Math.PI / 2 + Math.PI / 6 * turn;
+        torusArr[0].rotation.y = angle;
+        torusArr[1].rotation.y = angle;
+    }
+
+    function move(move) {
+        if (isTurning) {
+
+            isTurning = false;
+            torusArr[0].rotation.y = Math.PI / 2;
+            torusArr[1].rotation.y = Math.PI / 2;
+        } else {
+
+            var direct = car.getWorldDirection();
+
+            car.position.x += move * direct.x ;
+            car.position.z += move * direct.z ;
+        }
+    }
+
+    function getStats() {
+        //帧率监控
+        stats = new Stats();
+        let container = document.getElementById('state')
+        container.appendChild(stats.domElement);
+    }
+
+    function getCar(scene) {
+        var loader = new THREE.TextureLoader();
+
+        //car包含小车主体和轮胎，方便之后做旋转
+        car = new THREE.Object3D();
+        scene.add(car);
+
+        //小车纹理
+        var materials = [];
+        for (var i = 1; i < 7; ++i) {
+            materials.push(new THREE.MeshBasicMaterial({
+                map: THREE.ImageUtils.loadTexture(  i + '.jpeg',
+                        {}, function() {
+                            renderer.render(scene, camera);
+                        }),
+                overdraw: true
+            }));
+        }
+
+        //小车主体
+        var cube = new THREE.Mesh(new THREE.CubeGeometry(8, 4, 4), new THREE.MeshFaceMaterial(materials));
+        scene.add(cube);
+        car.add(cube);
+        cube.castShadow = true;
+
+        // 车轱辘
+        Array(5).join('1').split('').forEach(function(v, i) {
+            var torus = new THREE.Mesh(new THREE.TorusGeometry(0.8, 0.3, 18, 18), new THREE.MeshPhongMaterial({
+                color: 0x777777,
+                specular: 0xffff00,
+                shininess: 100
+            }));
+            torus.position.set(i<2? 2.5 : -2.5, -1.6, Math.pow(-1, i) * 2.4);
+            torus.castShadow = true;
+            scene.add(torus);
+            car.add(torus);
+        })
+
+    }
+
+
 
 </script>
 </html>
