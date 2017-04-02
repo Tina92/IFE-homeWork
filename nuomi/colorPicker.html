@@ -13,27 +13,27 @@
         <div class="color_input">
             <p>
                 <label for="">R</label>
-                <input type="number">
+                <input type="number" onblur="changNum(1)" >
             </p>
             <p>
                 <label for="">G</label>
-                <input type="number">
+                <input type="number" onblur="changNum(2)">
             </p>
             <p>
                 <label for="">B</label>
-                <input type="number">
+                <input type="number" onblur="changNum(3)">
             </p>
             <p>
                 <label for="">H</label>
-                <input type="number">
+                <input type="number" onblur="changNum(4)">
             </p>
             <p>
                 <label for="">S</label>
-                <input type="number">
+                <input type="number" onblur="changNum(5)">
             </p>
             <p>
                 <label for="">L</label>
-                <input type="number">
+                <input type="number" onblur="changNum(6)">
             </p>
         </div>
     </div>
@@ -99,6 +99,40 @@
         _this.inputs[3].value = Math.round(360 * h);
         _this.inputs[4].value = Math.round(100 * s);
         _this.inputs[5].value = Math.round(100 * l);
+    }
+    function hsltorgb() {
+        var h = _this.inputs[3].value,
+                s = _this.inputs[4].value / 100,
+                l = _this.inputs[5].value / 100;
+        var r, g, b;
+        if(s == 0){
+            r = g = b = l;
+        }else{
+            var q = l < 0.5 ? l * (l + s) : l + s - l * s,
+                    p = 2 * l - q;
+            r = toRgb(p, q, h + 1/3),
+                    g = toRgb(p, q, h),
+                    b = toRgb(p, q, h - 1/3);
+
+            function toRgb(p, q, t){
+                t < 0 && (t += 1),
+                t > 1 && (t -= 1);
+                if(t < 1/6) return p + (q - p) * 6 * t;
+                if(t < 1/2) return q;
+                if(t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+                return p;
+            }
+        }
+        _this.inputs[0].value = Math.round(255 * r);
+        _this.inputs[1].value = Math.round(255 * g);
+        _this.inputs[2].value = Math.round(255 * b);
+    }
+    function changNum(type) {
+        if(type < 4){
+            rgbtohsl();
+        }else {
+            hsltorgb();
+        }
     }
 </script>
 </html>
